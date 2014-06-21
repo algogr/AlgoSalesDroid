@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/general/navigation_next_item.png</file>
+        <file>images/general/navigation_previous_item.png</file>
+        <file>images/products/smartouch-i.jpg</file>
+        <file>images/attributevalues/switch.png</file>
+    </qresource>
+</RCC>

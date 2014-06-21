@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>StockItem.qml</file>
+        <file>ItemImage.qml</file>
+        <file>ItemAttribute.qml</file>
+        <file>AndroidDelegate.qml</file>
+        <file>Categories.qml</file>
+        <file>SubCategories.qml</file>
+        <file>ProductList.qml</file>
+        <file>ItemListDelegate.qml</file>
+        <file>AttributeValuesDelegate.qml</file>
+        <file>Customers.qml</file>
+        <file>CustomerList.qml</file>
+        <file>Reports.qml</file>
+        <file>CustomerListDelegate.qml</file>
+        <file>Customer.qml</file>
+        <file>NavigationBar.qml</file>
+        <file>BasicCusFinDataChart.qml</file>
+        <file>BasicCusFinData.qml</file>
+    </qresource>
+</RCC>
