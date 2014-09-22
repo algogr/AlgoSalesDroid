@@ -25,11 +25,16 @@ public:
     Q_INVOKABLE QList <QObject*> getAttributeValues(QString attid);
     Q_INVOKABLE QList <QObject*> getCustomerList();
     Q_INVOKABLE QVariant getCustomerField(QString cusid,QString fieldname);
-
+    Q_INVOKABLE QList <QObject*> getCustTransactions(QString cusid);
+    Q_INVOKABLE QList <QObject*> getTransactionItems(QString custranid);
+    Q_INVOKABLE QList <QObject*> getAgingAnalysis (QString custranid);
+    Q_INVOKABLE void insertBasket (QString cusid,QString iteid,QString quantity);
+    Q_INVOKABLE QList <QObject*> getBasketList ();
 
 signals:
 
 public slots:
+    void findlocation(const QString &street,const QString &city);
 
 private:
     QSqlDatabase mydb;

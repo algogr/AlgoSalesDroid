@@ -4,5 +4,11 @@
         <file>images/general/navigation_previous_item.png</file>
         <file>images/products/smartouch-i.jpg</file>
         <file>images/attributevalues/switch.png</file>
+        <file>images/general/map.jpeg</file>
+        <file>images/general/order_edit.png</file>
+        <file>images/general/order_new.png</file>
+        <file>images/general/checkin.png</file>
+        <file>images/general/delete-line.png</file>
+        <file>images/general/edit-line.png</file>
     </qresource>
 </RCC>

@@ -18,5 +18,15 @@
         <file>NavigationBar.qml</file>
         <file>BasicCusFinDataChart.qml</file>
         <file>BasicCusFinData.qml</file>
+        <file>CustomerTransDelegate.qml</file>
+        <file>CustomerTrans.qml</file>
+        <file>TransactionItems.qml</file>
+        <file>TransactionItemsDelegate.qml</file>
+        <file>Aging.qml</file>
+        <file>AgingDelegate.qml</file>
+        <file>CusFixedData.qml</file>
+        <file>QuantintyBox.qml</file>
+        <file>BasketDelegate.qml</file>
+        <file>Basket.qml</file>
     </qresource>
 </RCC>

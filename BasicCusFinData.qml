@@ -1,5 +1,5 @@
 import QtQuick 2.0
-Component{
+
 Rectangle
 {
     id: root
@@ -16,7 +16,7 @@ Rectangle
         Text
         {
             id: balancetext
-            text:"Yπόλοιπο : "
+            text:"Yπόλοιπο :"
             font.pixelSize: 25
             //width:parent.width
             wrapMode: Text.WordWrap
@@ -121,4 +121,4 @@ Rectangle
 
 }
 
-}
+

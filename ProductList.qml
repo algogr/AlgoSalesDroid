@@ -1,5 +1,8 @@
 import QtQuick 2.0
 import SqlQueryModel 1.0
+import QtQuick.Controls 1.2
+
+
 Rectangle {
 
     width: parent.width
@@ -38,11 +41,16 @@ Rectangle {
     NavigationBar
     {
         id:nv
+
+
+
+
+
+
         onClicked: stackView.pop();
 
-
-    }
 }
 
 
 
+}

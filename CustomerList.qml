@@ -1,11 +1,13 @@
 import QtQuick 2.0
 import SqlQueryModel 1.0
 
+
 Rectangle {
     width: parent.width
     height: parent.height
     id: customerlist
     color: "#000000"
+    property int checkin:0
     //anchors.fill: parent
 
 
@@ -29,10 +31,17 @@ Rectangle {
 
             onClicked: selectcustomer()
             function selectcustomer(){
-
+                if(checkin==0)
                 stackView.push(Qt.resolvedUrl("Customer.qml"),{selcusid:modelData.id});
-                //stackView.push(Qt.resolvedUrl("main.qml"));
-                console.log("selcusid:")
+                else
+                {
+                    mainwindow.ordermode=1
+                    mainwindow.ordercusid=modelData.id
+                    checkin=0
+                    console.log("add1:"+mainwindow.ordercusid)
+                    stackView.pop()
+
+                }
             }
         }
     }

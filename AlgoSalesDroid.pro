@@ -9,7 +9,11 @@ SOURCES += main.cpp \
     sqlquerymodel.cpp \
     product.cpp \
     attributevalue.cpp \
-    customer.cpp
+    customer.cpp \
+    customertransaction.cpp \
+    storetradeline.cpp \
+    aginganalysis.cpp \
+    basketline.cpp
 
 RESOURCES += qml.qrc \
     resources.qrc
@@ -27,6 +31,10 @@ HEADERS += \
     sqlquerymodel.h \
     product.h \
     attributevalue.h \
-    customer.h
+    customer.h \
+    customertransaction.h \
+    storetradeline.h \
+    aginganalysis.h \
+    basketline.h
 
 OTHER_FILES +=

@@ -7,6 +7,7 @@ Rectangle {
     width: parent.width
     color: "#000000"
     signal clicked
+    signal barclicked
 
     Image {
         id: arrow
@@ -68,6 +69,13 @@ Rectangle {
             font.family: "Abel"
             font.pointSize: 25
             text: "Droid"
+        }
+        MouseArea {
+
+            id:mouse1
+            anchors.fill: parent
+            onClicked: root.barclicked()
+
         }
     }
 

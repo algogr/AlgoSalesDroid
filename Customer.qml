@@ -9,31 +9,17 @@ Rectangle {
     property string selcusid
     property variant cusname
     property double sales
+    signal findlocation
     //property variant cusbalance
     //property variant cuschecques
 
-    width: parent.width
-    height: parent.height
+    //width: parent.width
+    //height: parent.height
     id:pagecustomer
     color: "#000000"
 
 
-    SqlQueryModel {
-        id: model
 
-
-        Component.onCompleted: {
-            model.opendb();
-            console.log("modelcus")
-            cusname=model.getCustomerField(selcusid,"name")
-            //sales=model.getCustomerField(selcusid,"sales")
-
-            //prdescr=model.getProductField(selitemid,"description");
-            //attributes=[]
-            //attributes=model.getProductAttrs(selitemid);
-
-        }
-    }
 
 
     Rectangle{
@@ -41,6 +27,23 @@ Rectangle {
         height: pagecustomer.height*2/20
         id: caption
         color:"#11ffffff"
+
+        SqlQueryModel {
+            id: model
+
+
+            Component.onCompleted: {
+                model.opendb();
+                console.log("modelcus")
+                cusname=model.getCustomerField(selcusid,"name")
+                //sales=model.getCustomerField(selcusid,"sales")
+
+                //prdescr=model.getProductField(selitemid,"description");
+                //attributes=[]
+                //attributes=model.getProductAttrs(selitemid);
+
+            }
+        }
 
         Text{
             id:custext
@@ -73,21 +76,28 @@ Rectangle {
             console.log("modelcus1")
             //cusbalance=model.getCustomerField(selcusid,"balance")
             //cuschecques=model.getCustomerField(selcusid,"openchecques")
-            addTab("Οικονομική εικόνα",basicfindata)
+            addTab("Οικονομική εικόνα",basicfindatatab)
             var c_tab=currentIndex;
 
             currentIndex=count-1;
-            addTab("Οικονομική εικόνα1")
+            addTab("Καρτέλα",customertranstab)
+            console.log("modelcus11111")
+            currentIndex=count-1;
             //for (var i=0; i<attributes.length; i++){
-            var c_tab=currentIndex;
-
+            //var c_tab=currentIndex;
+            addTab("Ανάλυση υπολοίπου",agingtab)
             currentIndex=count-1;
+            addTab("Σταθερά στοιχεία",cusfixedtab)
+            currentIndex=count-1;
+
+
+            currentIndex=c_tab;
             //attributevalues=model.getAttributeValues(attributes[i].id);
             //t.item.attid=attributes[i].id
             //console.log(attributevalues.length);
             //t.item.color="blue";
 
-            currentIndex=c_tab;
+
 
             //balancetext.text="Yπόλοιπο : "+cusbalance
 
@@ -96,10 +106,13 @@ Rectangle {
 
 
         }
-        Rectangle{
-            id:basicfindata
-            height:parent.height
-            width:parent.width
+
+        Component{
+            id:basicfindatatab
+
+            Rectangle{
+            height:tabv1.height
+            width:tabv1.width
 
             BasicCusFinData{
                 id:findata
@@ -114,7 +127,7 @@ Rectangle {
 
 
 
-            BasicFinDataChart{
+            BasicCusFinDataChart{
                 id:findatachart
                 balance: model.getCustomerField(selcusid,"balance")
                 checques: model.getCustomerField(selcusid,"openchecques")
@@ -133,6 +146,56 @@ Rectangle {
         }
     }
 
+        Component{
+            id:customertranstab
+            CustomerTrans{
+
+
+                height:tabv1.height
+                width:tabv1.width
+
+                model1: model.getCustTransactions(selcusid)
+
+
+            }
+
+
+    }
+        Component{
+            id: agingtab
+            Aging{
+                height:tabv1.height
+                width:tabv1.width
+                model1: model.getAgingAnalysis(selcusid)
+
+            }
+        }
+
+        Component{
+            id: cusfixedtab
+            CusFixedData{
+                height:tabv1.height
+                width:tabv1.width
+                color: "black"
+                street:"Διεύθυνση : "+model.getCustomerField(selcusid,"street")
+                district:"Περιοχή : "+model.getCustomerField(selcusid,"district")
+                city: "Πόλη : "+model.getCustomerField(selcusid,"city")
+                phone1: "Τηλ 1 : "+model.getCustomerField(selcusid,"phone1")
+                phone2: "Τηλ 2 : "+model.getCustomerField(selcusid,"phone2")
+                fax:"Fax : "+model.getCustomerField(selcusid,"fax")
+                email: "Email : "+model.getCustomerField(selcusid,"email")
+                //onMapclicked: {
+                  //  findlocation(streer,city)
+                //}
+
+
+            }
+        }
+
+    }
+
+
+
 
 
 
@@ -143,6 +206,8 @@ Rectangle {
 
 
     }
+
+
 
 
 }

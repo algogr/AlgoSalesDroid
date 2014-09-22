@@ -5,9 +5,20 @@
 #include "attribute.h"
 #include "attributevalue.h"
 #include "customer.h"
+#include "customertransaction.h"
+#include "storetradeline.h"
+#include "aginganalysis.h"
+#include "basketline.h"
+#include "QQuickView"
+#include "QDesktopServices"
+
 SqlQueryModel::SqlQueryModel(QSqlQueryModel *parent) :
     QSqlQueryModel(parent)
 {
+    //QQuickView view(QUrl::fromLocalFile("CusFixedData.qml"));
+    //QObject *item = (QObject*) view.rootObject();
+    //QObject::connect(item, SIGNAL(qmlSignal(mapclicked(QString,QString))),this, SLOT(findlocation(QString,QString)));
+    //connect(object,SIGNAL(findlocation),this,findlocation(addrd,city);)
 }
 
 
@@ -17,7 +28,9 @@ bool SqlQueryModel::opendb()
     bool open;
     // Adjust for Windows, OSX or Symbian deploy
     //mydb.setDatabaseName("/home/jim/workspace/HourGlassDroid/hourglass.sqlite");
-    mydb.setDatabaseName("/home/jim/workspace/AlgoSalesDroid/algosalesdroid.db");
+    QString dbpath = QDir::currentPath()+"/";
+    qDebug()<<dbpath+"algosalesdroid.db";
+    mydb.setDatabaseName(dbpath+"algosalesdroid.db");
     //mydb.setDatabaseName("/data/app/hourglass.sqlite");
     open=mydb.open();
     qDebug()<< mydb <<mydb.isOpen();
@@ -166,6 +179,7 @@ QList <QObject*>  SqlQueryModel::getCustomerList()
         customer->setName(query.value(1).toString());
         customer->setStatus(query.value(2).toString());
         customers.append(customer);
+
     }
     return customers;
 
@@ -191,5 +205,139 @@ QVariant SqlQueryModel::getCustomerField(QString cusid,QString fieldname)
     QVariant value = query.value(fieldname);
     qDebug()<<"descr:"<<value;
     return value;
+
+}
+
+QList <QObject*> SqlQueryModel::getCustTransactions(QString cusid)
+{
+    QSqlQuery query;
+    QString querystr="SELECT trndate,tradecode,totalamount*isdebit,\
+            totalamount*iscredit,\
+            case when ((iscredit=0) and (isdebit=0)) then totalamount\
+            else (select sum(c1.totalamount*(c1.isdebit-c1.iscredit)) \
+                  from customertrans c1 where c1.id<=c.id and c.cusid=c1.cusid)+\
+            (select sum(totalamount) from customertrans c2 where c.cusid=c2.cusid and ((c2.iscredit=0) and (c2.isdebit=0))) end,id \
+            from customertrans c\
+            where c.cusid="+cusid+" order by c.id";
+
+    qDebug()<<querystr;
+    query.exec(querystr);
+    QList <QObject*> customertransactions;
+
+    while (query.next())
+    {
+        CustomerTransaction* customertransaction=new CustomerTransaction();
+        customertransaction->setTrndate(query.value(0).toString());
+        customertransaction->setTradecode(query.value(1).toString());
+        customertransaction->setDebit(query.value(2).toFloat());
+        customertransaction->setCredit(query.value(3).toFloat());
+        customertransaction->setBalance(query.value(4).toFloat());
+        customertransaction->setId(query.value(5).toString());
+        customertransactions.append(customertransaction);
+    }
+    return customertransactions;
+}
+
+
+QList <QObject*> SqlQueryModel::getTransactionItems(QString custranid)
+{
+    QSqlQuery query;
+    QString querystr="SELECT m.code,m.description,st.qty,st.price,st.discount,st.value \
+            from material m,storetradelines st \
+            where m.id=st.matid and st.custranid="+custranid;
+
+    qDebug()<<querystr;
+    query.exec(querystr);
+    QList <QObject*> storetradelines;
+
+    while (query.next())
+    {
+        StoreTradeLine* storetradeline=new StoreTradeLine();
+        storetradeline->setMatcode(query.value(0).toString());
+        storetradeline->setMatdescription(query.value(1).toString());
+        storetradeline->setQty(query.value(2).toInt());
+        storetradeline->setPrice(query.value(3).toFloat());
+        storetradeline->setDiscount(query.value(4).toFloat());
+        storetradeline->setValue(query.value(5).toFloat());
+        storetradelines.append(storetradeline);
+    }
+    return storetradelines;
+}
+
+QList <QObject*> SqlQueryModel::getAgingAnalysis(QString cusid)
+{
+    QSqlQuery query;
+    QString querystr="SELECT previousfiscal,month1,month2,month3,month4,month5,month6,month7,month8,month9,\
+            month10,month11,month12,balance \
+            from aging where cusid="+cusid;
+
+    qDebug()<<querystr;
+    query.exec(querystr);
+    QList <QObject*> monthaging;
+    query.next();
+    for (int i=0;i<=13;i++)
+    {
+        AgingAnalysis *aging=new AgingAnalysis();
+        aging->setMonth(i);
+        if (aging->month()==0)
+        {
+            aging->setYear("Προηγούμενη Xρήση");
+            aging->setMonth("");
+        }
+        else if (aging->month()==13)
+        {
+           aging->setYear("Συνολικό Υπόλοιπο");
+                aging->setMonth("");
+        }
+
+
+        else if (aging->month()<=6)
+            aging->setYear("2014");
+        else
+            aging->setYear("2013");
+        aging->setAmount(query.value(i).toFloat());
+        monthaging.append(aging);
+
+    }
+
+
+
+
+    return monthaging;
+}
+
+void SqlQueryModel::findlocation(const QString &street,const QString &city)
+{
+    QString link = "http://maps.google.com/maps?&daddr="+street+" "+city;
+    qDebug()<<"SQLQM:"<<link;
+    QDesktopServices::openUrl(link);
+}
+
+void SqlQueryModel::insertBasket (QString cusid,QString iteid,QString quantity)
+{
+    QSqlQuery query;
+    QString querystr="insert into basket (cusid,iteid,quantity) values ("+cusid+","+iteid+","+quantity+")";
+    qDebug()<<querystr;
+    query.exec(querystr);
+}
+
+QList<QObject*> SqlQueryModel::getBasketList()
+{
+    QSqlQuery query;
+    QString querystr="SELECT i.code,i.description,b.quantity from basket b,item i where i.id=b.iteid";
+    query.exec(querystr);
+    qDebug()<<querystr;
+    QList<QObject*> basketlines;
+    while(query.next())
+    {
+        basketline* line=new basketline();
+        line->setCode(query.value(0).toString());
+        line->setDescription(query.value(1).toString());
+        line->setQuantity(query.value(2).toString());
+        qDebug()<<query.value(0).toString();
+        qDebug()<<basketlines;
+        basketlines.append(line);
+    }
+    return basketlines;
 
 }

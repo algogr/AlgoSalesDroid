@@ -8,7 +8,9 @@ ApplicationWindow {
     width: 1000
     height: 700
     title: qsTr("AlgoSalesDroid")
-
+    property int ordermode:0
+    property int ordercusid
+    signal mapclicked(string street,string city)
 
     Rectangle{
         anchors.fill: parent
@@ -43,7 +45,12 @@ ApplicationWindow {
                 anchors.fill: parent
                 delegate: AndroidDelegate {
                     text: title
-                    onClicked: stackView.push(Qt.resolvedUrl(page))
+                    onClicked:
+                    {
+
+                        stackView.push(Qt.resolvedUrl(page))
+                        //mainwindow.mapclicked("ΒΕΝΙΖΕΛΟΥ 57","ΚΑΒΑΛΑ")
+                    }
                 }
             }
         }

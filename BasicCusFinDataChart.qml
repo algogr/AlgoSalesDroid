@@ -1,5 +1,5 @@
 import QtQuick 2.0
-Component{
+
 Rectangle{
     property double balance
     property double checques
@@ -57,4 +57,4 @@ Rectangle{
     }
 }
 }
-}
+
